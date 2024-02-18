@@ -61,6 +61,7 @@ public class ColorImage {
     // Reduce the color space to a d-bit representation
     public void reduceColor(int d) {
         int scale = (int) Math.pow(2, 8 - d);
+        depth = 8 - d;
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
