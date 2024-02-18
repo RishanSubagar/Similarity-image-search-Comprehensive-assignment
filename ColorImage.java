@@ -60,14 +60,12 @@ public class ColorImage {
 
     // Reduce the color space to a d-bit representation
     public void reduceColor(int d) {
-        // Implement your logic to reduce the color space to d bits
-        // You may need to scale the pixel values accordingly
-        // This is specific to the PPM format, adapt as needed for your use case
-        int scale = (int) Math.pow(2, depth - d);
+        int scale = (int) Math.pow(2, 8 - d);
+
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 for (int c = 0; c < 3; c++) {
-                    pixels[i][j][c] = (pixels[i][j][c] / scale) * scale;
+                    pixels[i][j][c] = pixels[i][j][c] >> (8 - d);
                 }
             }
         }
