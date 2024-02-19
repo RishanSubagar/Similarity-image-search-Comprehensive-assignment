@@ -46,8 +46,8 @@ public class ColorHistogram {
 	}
 	
 	public double compare(ColorHistogram hist) {
-        double[] hist1 = this.getDataHistogram();
-        double[] hist2 = hist.getHistogram();
+        double[] hist1 = this.getHistogram();
+        double[] hist2 = hist.getDataHistogram();
         double intersection = 0.0;
         for (int i = 0; i < hist1.length; i++) {
             intersection += Math.min(hist1[i], hist2[i]);

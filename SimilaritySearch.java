@@ -55,10 +55,10 @@ public class SimilaritySearch {
 					for (int j = 0; j < datasetHist.getHistLength(); j++) {
 						datasetHist.insertCustom(j, Integer.parseInt(line[j]));
 					}
-                    
+
                     histogram.setImage(reducedImage);
 					double distance = histogram.compare(datasetHist);
-					if (similarImages[10] == null) {
+					if (similarImages[4] == null) {
 						for (int k = 0; k < similarImages.length; k++) {
 							if (similarImages[k] == null) {
 								similarImages[k] = distance;
