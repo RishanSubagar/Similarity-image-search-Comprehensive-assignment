@@ -33,9 +33,17 @@ public class ColorImage {
             // Read pixel values
             for (int j = 0; j < height; j++) {
                 for (int i = 0; i < width; i++) {
-                    pixels[i][j][0] = Integer.parseInt(br.readLine());
-                    pixels[i][j][1] = Integer.parseInt(br.readLine());
-                    pixels[i][j][2] = Integer.parseInt(br.readLine());
+                    String[] numbers = br.readLine().split("\\s+");
+
+                    // Process all numbers on the line
+                    for (int c = 0; c < numbers.length; c+=3) {
+                        pixels[i][j][0] = Integer.parseInt(numbers[c]);
+                        pixels[i][j][1] = Integer.parseInt(numbers[c+1]);
+                        pixels[i][j][2] = Integer.parseInt(numbers[c+2]);
+                        if (c + 3 < numbers.length) {
+                            i++;
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
