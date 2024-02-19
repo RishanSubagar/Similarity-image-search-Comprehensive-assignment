@@ -1,6 +1,12 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class SimilaritySearch {
+
     public static void main(String[] args) { 
         // Check if the correct number of command-line arguments is provided
         if (args.length != 2) {
@@ -14,6 +20,8 @@ public class SimilaritySearch {
 
         // Check if the specified image dataset directory exists
         File datasetDirectory = new File(imageDatasetDirectory);
+        File[] listOfFiles = datasetDirectory.listFiles();
+        
         if (!datasetDirectory.exists() || !datasetDirectory.isDirectory()) {
             System.out.println("Error: Image dataset directory does not exist or is not a directory.");
             System.exit(1);
@@ -34,6 +42,38 @@ public class SimilaritySearch {
                 int index = ((pixel[0] << (2*D) + (pixel[1] << D) + pixel[2]));
                 histogram.insert(index);
             }
+        }
+        
+        ColorHistogram datasetHist = new ColorHistogram(3);
+        Double[] similarImages = new Double[5];
+        String[] similarImagesName = new String[5];
+        
+        for (int i = 0; i < listOfFiles.length; i++) {
+        	  File file = listOfFiles[i];
+        	  if (file.isFile() && file.getName().endsWith(".txt")) {
+        		  try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        			br.readLine();
+					for (int j = 0; j < datasetHist.getHistLength(); j++) {
+						datasetHist.insertCustom(j, Integer.parseInt(br.readLine()));
+					}
+					double distance = histogram.compare(datasetHist);
+					if (similarImages[10] == null) {
+						for (int k = 0; k < similarImages.length; k++) {
+							if (similarImages[k] == null) {
+								similarImages[k] = distance;
+								similarImagesName[k] = file.getName();
+							}
+						}
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	    
+        	  } 
+        }
+    
+        for (int i = 0; i<5;i++) {
+        	System.out.println(similarImagesName[i]);
         }
         
     }

@@ -6,7 +6,9 @@ public class ColorHistogram {
 	private ColorImage image;
 	
 	public ColorHistogram(int d) {
-        histogram = new int[(int) Math.pow(2, d*3)];
+		
+		histogram = new int[(int) Math.pow(2, d*3)];
+		
     }
 	
 	public ColorHistogram(String filename) {
@@ -28,6 +30,10 @@ public class ColorHistogram {
         return normalizedHistogram;
     }
 	
+	public int getHistLength() {
+		return histogram.length;
+	}
+	
 	public double compare(ColorHistogram hist) {
         double[] hist1 = this.getHistogram();
         double[] hist2 = hist.getHistogram();
@@ -37,6 +43,10 @@ public class ColorHistogram {
         }
         return intersection;
     }
+	
+	public void insertCustom(int index, int amount) {
+		histogram[index] = amount;
+	}
 
     public void insert(int index){
         histogram[index] = histogram[index]+1;
