@@ -6,9 +6,9 @@ public class ColorImage {
     private int width;
     private int height;
     private int depth; // Number of bits per pixel
-    private int[][][] pixels; // Array representation of pixel values
+    private int[][][] pixels; // Array representation of pixel values 
 
-    // Constructor that creates an image from a file (supports jpg and ppm formats)
+    // Constructor that creates an image from ppm file 
     public ColorImage(String filename) {
         if (filename.toLowerCase().endsWith(".ppm")) {
             readPpmImage(filename);
@@ -19,8 +19,11 @@ public class ColorImage {
 
     private void readPpmImage(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            // Read PPM header
-            br.readLine();
+            // Skip the first two lines
+            for (int i = 0; i < 2; i++) {
+                br.readLine();
+            }
+
             String[] dimensions = br.readLine().split(" ");
             width = Integer.parseInt(dimensions[0]);
             height = Integer.parseInt(dimensions[1]);
@@ -60,7 +63,7 @@ public class ColorImage {
 
     // Reduce the color space to a d-bit representation
     public void reduceColor(int d) {
-        int scale = (int) Math.pow(2, 8 - d);
+        //int scale = (int) Math.pow(2, 8 - d);
         depth = 8 - d;
 
         for (int i = 0; i < width; i++) {

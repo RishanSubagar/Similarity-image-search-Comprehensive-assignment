@@ -39,6 +39,10 @@ public class ColorHistogram {
         }
         return intersection;
     }
+
+    public void insert(int[] pixel, int index){
+        
+    }
 	
 	public void save(String filename) {
         try {
