@@ -19,5 +19,22 @@ public class SimilaritySearch {
             System.exit(1);
         }
         
+        ColorImage queryImage = new ColorImage(queryImageFilename);
+        queryImage.reduceColor(3);
+        ColorHistogram histogram = new ColorHistogram(queryImage.getDepth());
+        int height = queryImage.getHeight();
+        int width = queryImage.getWidth();
+        int[] pixels;
+        int j = 0;
+        for (int i = 0; i < height*width / 3; i++) {
+        	pixels = queryImage.getPixel(i, j);
+        	if (histogram[i] == ((pixels[0] << (2*queryImage.getDepth()) + (pixels[1] << queryImage.getDepth()) + pixels[2]))); 
+        }
+        for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                if (i == )
+            }
+        }
+        
     }
 }
