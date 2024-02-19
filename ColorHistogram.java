@@ -29,13 +29,24 @@ public class ColorHistogram {
         }
         return normalizedHistogram;
     }
+
+    public double[] getDataHistogram() {
+        int length = histogram.length;
+        double[] doubleArray = new double[length];
+
+        for (int i = 0; i < length; i++) {
+            doubleArray[i] = (double) histogram[i]; // Casting each element to double
+        }
+
+        return doubleArray;
+    }
 	
 	public int getHistLength() {
 		return histogram.length;
 	}
 	
 	public double compare(ColorHistogram hist) {
-        double[] hist1 = this.getHistogram();
+        double[] hist1 = this.getDataHistogram();
         double[] hist2 = hist.getHistogram();
         double intersection = 0.0;
         for (int i = 0; i < hist1.length; i++) {

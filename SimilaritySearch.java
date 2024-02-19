@@ -37,7 +37,7 @@ public class SimilaritySearch {
         for (int i = 0; i < width; i++) {
             for (int j=0; j<height; j++) {
                 int[] pixel = reducedImage.getPixel(i, j);
-                int index = ((pixel[0] << (2*D) + (pixel[1] << D) + pixel[2]));
+                int index = ((pixel[0] << (2*D)) + (pixel[1] << D) + pixel[2]);
                 histogram.insert(index);
             }
         }
@@ -51,9 +51,12 @@ public class SimilaritySearch {
         	  if (file.isFile() && file.getName().endsWith(".txt")) {
         		  try (BufferedReader br = new BufferedReader(new FileReader(file))) {
         			br.readLine();
+                    String[] line = br.readLine().split(" ");
 					for (int j = 0; j < datasetHist.getHistLength(); j++) {
-						datasetHist.insertCustom(j, Integer.parseInt(br.readLine()));
+						datasetHist.insertCustom(j, Integer.parseInt(line[j]));
 					}
+                    
+                    histogram.setImage(reducedImage);
 					double distance = histogram.compare(datasetHist);
 					if (similarImages[10] == null) {
 						for (int k = 0; k < similarImages.length; k++) {
