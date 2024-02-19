@@ -32,7 +32,7 @@ public class SimilaritySearch {
             for (int j=0; j<height; j++) {
                 int[] pixel = reducedImage.getPixel(i, j);
                 int index = ((pixel[0] << (2*D) + (pixel[1] << D) + pixel[2]));
-                //histogram[index] 
+                histogram.insert(index);
             }
         }
         

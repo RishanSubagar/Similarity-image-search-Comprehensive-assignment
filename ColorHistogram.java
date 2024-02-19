@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
-
 
 public class ColorHistogram {
 
@@ -40,8 +38,8 @@ public class ColorHistogram {
         return intersection;
     }
 
-    public void insert(int[] pixel, int index){
-        
+    public void insert(int index){
+        histogram[index] = histogram[index]+1;
     }
 	
 	public void save(String filename) {
