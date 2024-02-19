@@ -47,30 +47,62 @@ public class SimilaritySearch {
         String[] similarImagesName = new String[5];
         
         for (int i = 0; i < listOfFiles.length; i++) {
-        	  File file = listOfFiles[i];
-        	  if (file.isFile() && file.getName().endsWith(".txt")) {
-        		  try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-        			br.readLine();
-                    String[] line = br.readLine().split(" ");
-					for (int j = 0; j < datasetHist.getHistLength(); j++) {
-						datasetHist.insertCustom(j, Integer.parseInt(line[j]));
-					}
+            File file = listOfFiles[i];
 
-                    histogram.setImage(reducedImage);
-					double distance = histogram.compare(datasetHist);
-					if (similarImages[4] == null) {
-						for (int k = 0; k < similarImages.length; k++) {
-							if (similarImages[k] == null) {
-								similarImages[k] = distance;
-								similarImagesName[k] = file.getName();
-							}
-						}
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+            if (file.isFile() && file.getName().endsWith(".txt")) {
+                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                br.readLine();
+                String[] line = br.readLine().split(" ");
+
+                // Create histogram
+                for (int j = 0; j < datasetHist.getHistLength(); j++) {
+                    datasetHist.insertCustom(j, Integer.parseInt(line[j]));
+                }
+
+                // Compare and find similar images
+                histogram.setImage(reducedImage);
+                double distance = histogram.compare(datasetHist);
+                if (similarImages[4] == null) {
+                    for (int k = 0; k < similarImages.length; k++) {
+                        if (similarImages[k] == null) {
+                            similarImages[k] = distance;
+                            similarImagesName[k] = file.getName();
+                            break;
+                        }
+                        if (similarImages[k] < distance) {
+                            if (k < 4) {
+                                // Shift elements to make space for the new distance
+                                for (int m = 3; m > k; m--) {
+                                    similarImages[m] = similarImages[m - 1];
+                                    similarImagesName[m] = similarImagesName[m - 1];
+                                }
+                                similarImages[k] = distance;
+                                similarImagesName[k] = file.getName();
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    for (int k = 0; k < similarImages.length; k++) {
+                        if (similarImages[k] < distance) {
+                            if (k < 4) {
+                                // Shift elements to make space for the new distance
+                                for (int m = 3; m > k; m--) {
+                                    similarImages[m] = similarImages[m - 1];
+                                    similarImagesName[m] = similarImagesName[m - 1];
+                                }
+                                similarImages[k] = distance;
+                                similarImagesName[k] = file.getName();
+                                break;
+                            }
+                        }
+                    }
+                }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         	    
-        	  } 
+        	} 
         }
     
         for (int i = 0; i<5;i++) {
