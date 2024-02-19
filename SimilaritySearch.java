@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class SimilaritySearch {
 
@@ -32,7 +30,7 @@ public class SimilaritySearch {
         int D = 3;
         reducedImage.reduceColor(D);
 
-        ColorHistogram histogram = new ColorHistogram(reducedImage.getDepth());
+        ColorHistogram histogram = new ColorHistogram(D);
         int height = reducedImage.getHeight();
         int width = reducedImage.getWidth();
 
