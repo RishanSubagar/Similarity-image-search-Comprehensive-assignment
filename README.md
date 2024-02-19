@@ -1,2 +1,2 @@
 # Similarity-image-search-Comprehensive-assignment
-Searches through dataset of iomages to find top 5 most similar to query image.
+Searches through a dataset of images to find the top 5 most similar to the query image.
