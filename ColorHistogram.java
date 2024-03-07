@@ -1,82 +1,105 @@
 // Rishan Subagar 300287082
 // Azaan Khan 3000304561
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class ColorHistogram {
+    private double[] histogram;
+    private int d;
+    private ColorImage image;
 
-	private int[] histogram;
-	private ColorImage image;
-	
-	public ColorHistogram(int d) {
-		
-		histogram = new int[(int) Math.pow(2, d*3)];
-		
+    // Initialise an empty histogram with a certain depth
+    public ColorHistogram(int d) {
+        this.d = d;
+
+        int bins = (int) Math.pow(2, d * 3);
+        double[] histogram = new double[bins];
+
+        this.histogram = histogram;
     }
-	
-	public ColorHistogram(String filename) {
-		ColorImage temp = new ColorImage(filename);
-		int d = temp.getDepth();
-		histogram = new int[(int) Math.pow(2, d*3)];
+
+    // Intialise a histogram from an existing histogram representation in a text
+    // file
+    public ColorHistogram(String filename) throws FileNotFoundException {
+        File file = new File(filename);
+        Scanner scanner = new Scanner(file);
+
+        int bins = scanner.nextInt();
+        double[] histogram = new double[bins];
+
+        for (int i = 0; i < bins; i++) {
+            int nextInt = scanner.nextInt();
+            histogram[i] = nextInt;
+        }
+
+        this.histogram = histogram;
+
+        scanner.close();
     }
-	
-	public void setImage(ColorImage image) {
+
+    // Create an histogram using an image
+    public void setImage(ColorImage image) {
         this.image = image;
-    }
-	
-	public double[] getHistogram() {
-        int totalPixels = image.getWidth() * image.getHeight();
-        double[] normalizedHistogram = new double[histogram.length];
-        for (int i = 0; i < histogram.length; i++) {
-            normalizedHistogram[i] = (double) histogram[i] / totalPixels;
+
+        int[][][] realImage = this.image.getImage();
+        int width = this.image.getWidth();
+        int height = this.image.getHeight();
+
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                int R = realImage[row][col][0];
+                int G = realImage[row][col][1];
+                int B = realImage[row][col][2];
+                this.histogram[(R << (2 * d)) + (G << d) + B]++;
+            }
         }
-        return normalizedHistogram;
     }
 
-    public double[] getDataHistogram() {
-        int length = histogram.length;
-        double[] doubleArray = new double[length];
-
-        for (int i = 0; i < length; i++) {
-            doubleArray[i] = (double) histogram[i]; // Casting each element to double
+    // Return the normalised histogram
+    public double[] getHistogram() {
+        double[] normalisedHistorgram = this.histogram;
+        // Compute total sum of histogram bins
+        double totalCount = 0;
+        for (double value : this.histogram) {
+            totalCount += value;
         }
 
-        return doubleArray;
+        // Divide each bin by total sum to normalise
+        for (int i = 0; i < this.histogram.length; i++) {
+            normalisedHistorgram[i] /= totalCount;
+        }
+        return normalisedHistorgram;
     }
-	
-	public int getHistLength() {
-		return histogram.length;
-	}
-	
-	public double compare(ColorHistogram hist) {
-        double[] hist1 = this.getHistogram();
-        double[] hist2 = hist.getDataHistogram();
-        double intersection = 0.0;
-        for (int i = 0; i < hist1.length; i++) {
-            intersection += Math.min(hist1[i], hist2[i]);
+
+    // Compare a histogram using histogram intersection to the current instance
+    public double compare(ColorHistogram histogram) {
+
+        double[] histogram1 = getHistogram();
+        double[] histogram2 = histogram.getHistogram();
+
+        double intersection = 0;
+        for (int i = 0; i < this.histogram.length; i++) {
+            intersection += Math.min(histogram1[i], histogram2[i]);
         }
+
         return intersection;
     }
-	
-	public void insertCustom(int index, int amount) {
-		histogram[index] = amount;
-	}
 
-    public void insert(int index){
-        histogram[index] = histogram[index]+1;
-    }
-	
-	public void save(String filename) {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-            for (int value : histogram) {
-                writer.write(Integer.toString(value));
-                writer.newLine();
-            }
-            writer.close();
+    // Save the histogram instance to a text file in the savedHistograms directory
+    public void save(String filename) {
+        String filePath = String.format("savedHistograms/%s", filename);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(Arrays.toString(histogram));
+            System.out.println("Histogram saved at savedHistograms/" + filename);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
-	
 }

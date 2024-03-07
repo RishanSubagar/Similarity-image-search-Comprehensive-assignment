@@ -1,87 +1,79 @@
 // Rishan Subagar 300287082
 // Azaan Khan 3000304561
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
 
 public class ColorImage {
     private int width;
     private int height;
-    private int depth; // Number of bits per pixel
-    private int[][][] pixels; // Array representation of pixel values 
+    private int depth;
+    private int[][][] image;
 
-    // Constructor that creates an image from ppm file 
-    public ColorImage(String filename) {
-        if (filename.toLowerCase().endsWith(".ppm")) {
-            readPpmImage(filename);
-        } else {
-            System.err.println("Unsupported image format.");
+    // Create an image from a .ppm file.
+    public ColorImage(String filename) throws FileNotFoundException {
+        File file = new File(filename);
+        Scanner scanner = new Scanner(file);
+
+        scanner.nextLine(); // Skip the 'P3' line
+        scanner.nextLine(); // Skip the comment line
+
+        this.width = scanner.nextInt();
+        this.height = scanner.nextInt();
+        this.depth = scanner.nextInt();
+
+        int[][][] image = new int[height][width][3];
+
+        // Read the pixel data
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                image[row][col][0] = scanner.nextInt(); // Red
+                image[row][col][1] = scanner.nextInt(); // Green
+                image[row][col][2] = scanner.nextInt(); // Blue
+            }
         }
+
+        scanner.close();
+
+        this.image = image;
     }
 
-    private void readPpmImage(String filename) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            // Skip the first two lines
-            for (int i = 0; i < 2; i++) {
-                br.readLine();
-            }
-
-            String[] dimensions = br.readLine().split(" ");
-            width = Integer.parseInt(dimensions[0]);
-            height = Integer.parseInt(dimensions[1]);
-            depth = Integer.parseInt(br.readLine());
-            pixels = new int[width][height][3];
-
-            // Read pixel values
-            for (int j = 0; j < height; j++) {
-                for (int i = 0; i < width; i++) {
-                    String[] numbers = br.readLine().split("\\s+");
-
-                    // Process all numbers on the line
-                    for (int c = 0; c < numbers.length; c+=3) {
-                        pixels[i][j][0] = Integer.parseInt(numbers[c]);
-                        pixels[i][j][1] = Integer.parseInt(numbers[c+1]);
-                        pixels[i][j][2] = Integer.parseInt(numbers[c+2]);
-                        if (c + 3 < numbers.length) {
-                            i++;
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Getter methods for image attributes
+    // Return width
     public int getWidth() {
         return width;
     }
 
+    // Return height
     public int getHeight() {
         return height;
     }
 
+    // Return depth
     public int getDepth() {
         return depth;
     }
 
-    // Get the 3-channel value of pixel at column i, row j
-    public int[] getPixel(int i, int j) {
-        return pixels[i][j];
+    // Return image representation
+    public int[][][] getImage() {
+        return image;
     }
 
-    // Reduce the color space to a d-bit representation
-    public void reduceColor(int d) {
-        //int scale = (int) Math.pow(2, 8 - d);
-        this.depth = 8 - d;
+    // Return the R G B values at a pixel
+    public int[] getPixel(int i, int j) {
+        int[] arr = new int[3];
+        arr[0] = image[i][j][0];
+        arr[1] = image[i][j][1];
+        arr[2] = image[i][j][2];
+        return arr;
+    }
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                for (int c = 0; c < 3; c++) {
-                    pixels[i][j][c] = pixels[i][j][c] >> (8 - d);
-                }
+    // Reduce existing image to depth d
+    public void reduceColor(int d) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                image[row][col][0] = image[row][col][0] >> 8 - d;
+                image[row][col][1] = image[row][col][1] >> 8 - d;
+                image[row][col][2] = image[row][col][2] >> 8 - d;
             }
         }
     }
